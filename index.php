@@ -1,9 +1,22 @@
 <?php
+
+require_once "classes/Cliente.php";
 require_once "classes/Produto.php";
+require_once "classes/Pedido.php";
 
-$p = new Produto(1, "Mouse", -50);
+$cliente = new Cliente(1, "João Silva", "joao@email.com");
 
-echo $p->getPreco();
+$p1 = new Produto(1, "Notebook", 3500);
+$p2 = new Produto(2, "Mouse Gamer", 150);
+$p3 = new Produto(3, "Headset", 280);
+
+$pedido = new Pedido(1001, $cliente);
+
+$pedido->adicionarProduto($p1);
+$pedido->adicionarProduto($p2);
+$pedido->adicionarProduto($p3);
+
+$pedido->exibirResumo();
 ?>
 
 <!DOCTYPE html>
