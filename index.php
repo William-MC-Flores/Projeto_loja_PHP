@@ -1,9 +1,9 @@
 <?php
-require_once "classes/Cliente.php";
+require_once "classes/Produto.php";
 
-$cliente = new Cliente(1, "João Silva", "joao@email.com");
+$p = new Produto(1, "Mouse", -50);
 
-echo $cliente->getNome();
+echo $p->getPreco();
 ?>
 
 <!DOCTYPE html>
