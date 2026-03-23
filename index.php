@@ -16,22 +16,20 @@ $pedido->adicionarProduto($p1);
 $pedido->adicionarProduto($p2);
 $pedido->adicionarProduto($p3);
 
-$pedido->exibirResumo();
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <title>Sistema de Loja</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <h1>Sistema de Pedidos da Loja</h1>
+<?php
+$pedido->exibirResumo();
+?>
 
 </body>
-
 </html>
