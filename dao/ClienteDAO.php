@@ -76,4 +76,14 @@ class ClienteDAO
 
         return $stmt->execute();
     }
+
+    public function contarClientes()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM clientes";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) $resultado["total"];
+    }
 }

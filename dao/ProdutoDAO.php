@@ -76,4 +76,14 @@ class ProdutoDAO
 
         return $stmt->execute();
     }
+
+    public function contarProdutos()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM produtos";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) $resultado["total"];
+    }
 }

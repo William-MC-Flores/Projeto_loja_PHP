@@ -1,3 +1,18 @@
+<?php
+
+require_once __DIR__ . "/dao/ClienteDAO.php";
+require_once __DIR__ . "/dao/ProdutoDAO.php";
+require_once __DIR__ . "/dao/PedidoDAO.php";
+
+$clienteDAO = new ClienteDAO();
+$produtoDAO = new ProdutoDAO();
+$pedidoDAO = new PedidoDAO();
+
+$totalClientes = $clienteDAO->contarClientes();
+$totalProdutos = $produtoDAO->contarProdutos();
+$totalPedidos = $pedidoDAO->contarPedidos();
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,6 +25,23 @@
 
 <div class="container">
     <h1>Sistema de Pedidos da Loja</h1>
+
+    <div class="dashboard-cards">
+        <div class="mini-card">
+            <h2><?= htmlspecialchars($totalClientes) ?></h2>
+            <p>Clientes</p>
+        </div>
+
+        <div class="mini-card">
+            <h2><?= htmlspecialchars($totalProdutos) ?></h2>
+            <p>Produtos</p>
+        </div>
+
+        <div class="mini-card">
+            <h2><?= htmlspecialchars($totalPedidos) ?></h2>
+            <p>Pedidos</p>
+        </div>
+    </div>
 
     <div class="card">
         <h2>Menu Principal</h2>
