@@ -4,6 +4,8 @@ require_once __DIR__ . "/dao/ClienteDAO.php";
 require_once __DIR__ . "/dao/ProdutoDAO.php";
 require_once __DIR__ . "/dao/PedidoDAO.php";
 
+$tituloPagina = "Dashboard | Sistema da Loja";
+
 $clienteDAO = new ClienteDAO();
 $produtoDAO = new ProdutoDAO();
 $pedidoDAO = new PedidoDAO();
@@ -11,17 +13,9 @@ $pedidoDAO = new PedidoDAO();
 $totalClientes = $clienteDAO->contarClientes();
 $totalProdutos = $produtoDAO->contarProdutos();
 $totalPedidos = $pedidoDAO->contarPedidos();
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema da Loja</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+require_once __DIR__ . "/partials/header.php";
+?>
 
 <div class="container">
     <h1>Sistema de Pedidos da Loja</h1>
@@ -53,5 +47,4 @@ $totalPedidos = $pedidoDAO->contarPedidos();
     </div>
 </div>
 
-</body>
-</html>
+<?php require_once __DIR__ . "/partials/footer.php"; ?>

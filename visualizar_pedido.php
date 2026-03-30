@@ -2,6 +2,8 @@
 
 require_once __DIR__ . "/dao/PedidoDAO.php";
 
+$tituloPagina = "Detalhes do Pedido";
+
 $pedidoDAO = new PedidoDAO();
 
 if (!isset($_GET["id"])) {
@@ -17,17 +19,9 @@ if (!$pedido) {
 }
 
 $itens = $pedidoDAO->listarItens($id);
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Pedido</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+require_once __DIR__ . "/partials/header.php";
+?>
 
 <div class="container">
     <h1>Detalhes do Pedido #<?= htmlspecialchars($pedido["id"]) ?></h1>
@@ -78,5 +72,4 @@ $itens = $pedidoDAO->listarItens($id);
     </div>
 </div>
 
-</body>
-</html>
+<?php require_once __DIR__ . "/partials/footer.php"; ?>

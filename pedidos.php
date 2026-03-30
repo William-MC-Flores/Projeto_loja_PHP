@@ -8,6 +8,12 @@ require_once __DIR__ . "/models/Produto.php";
 require_once __DIR__ . "/models/Pedido.php";
 require_once __DIR__ . "/models/ItemPedido.php";
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$tituloPagina = "Pedidos | Sistema da Loja";
+
 $clienteDAO = new ClienteDAO();
 $produtoDAO = new ProdutoDAO();
 $pedidoDAO = new PedidoDAO();
@@ -16,7 +22,6 @@ $clientes = $clienteDAO->listar();
 $produtos = $produtoDAO->listar();
 $pedidos = $pedidoDAO->listar();
 
-$msg = "";
 $erro = "";
 
 if (isset($_POST["salvar"])) {
@@ -53,31 +58,25 @@ if (isset($_POST["salvar"])) {
             if (count($pedido->getItens()) === 0) {
                 $erro = "Informe quantidade válida para os produtos selecionados.";
             } elseif ($pedidoDAO->inserir($pedido)) {
-                $msg = "Pedido cadastrado com sucesso!";
-                $pedidos = $pedidoDAO->listar();
+                $_SESSION["mensagem_sucesso"] = "Pedido cadastrado com sucesso!";
+                header("Location: pedidos.php");
+                exit;
             } else {
                 $erro = "Erro ao cadastrar pedido.";
             }
         }
     }
 }
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos | Projeto Loja</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+require_once __DIR__ . "/partials/header.php";
+?>
 
 <div class="container">
     <h1>Cadastro de Pedidos</h1>
 
-    <?php if ($msg != ""): ?>
-        <p class="mensagem sucesso"><?= htmlspecialchars($msg) ?></p>
+    <?php if (!empty($_SESSION["mensagem_sucesso"])): ?>
+        <p class="mensagem sucesso"><?= htmlspecialchars($_SESSION["mensagem_sucesso"]) ?></p>
+        <?php unset($_SESSION["mensagem_sucesso"]); ?>
     <?php endif; ?>
 
     <?php if ($erro != ""): ?>
@@ -85,7 +84,7 @@ if (isset($_POST["salvar"])) {
     <?php endif; ?>
 
     <div class="card">
-        <form method="POST" class="formulario">
+        <form method="POST" class="formulario" id="form-pedido">
             <div class="campo">
                 <label for="cliente_id">Cliente</label>
                 <select name="cliente_id" id="cliente_id" required>
@@ -106,7 +105,12 @@ if (isset($_POST["salvar"])) {
                         <?php foreach ($produtos as $produto): ?>
                             <div class="produto-item">
                                 <label class="produto-check">
-                                    <input type="checkbox" name="produtos[]" value="<?= htmlspecialchars($produto["id"]) ?>">
+                                    <input
+                                        type="checkbox"
+                                        name="produtos[]"
+                                        value="<?= htmlspecialchars($produto["id"]) ?>"
+                                        class="produto-checkbox"
+                                        data-preco="<?= htmlspecialchars($produto["preco"]) ?>">
                                     <?= htmlspecialchars($produto["nome"]) ?> — R$ <?= number_format($produto["preco"], 2, ",", ".") ?>
                                 </label>
 
@@ -116,13 +120,18 @@ if (isset($_POST["salvar"])) {
                                     min="1"
                                     value="1"
                                     class="input-quantidade"
-                                >
+                                    data-produto-id="<?= htmlspecialchars($produto["id"]) ?>">
                             </div>
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
                     <p>Cadastre produtos antes de criar um pedido.</p>
                 <?php endif; ?>
+            </div>
+
+            <div class="card total-previo-box">
+                <h2>Total Prévio</h2>
+                <p id="total-previo">R$ 0,00</p>
             </div>
 
             <button type="submit" name="salvar" class="btn">Salvar Pedido</button>
@@ -141,6 +150,7 @@ if (isset($_POST["salvar"])) {
                             <th>Cliente</th>
                             <th>Total</th>
                             <th>Data</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,6 +160,14 @@ if (isset($_POST["salvar"])) {
                                 <td><?= htmlspecialchars($pedido["cliente_nome"]) ?></td>
                                 <td>R$ <?= number_format($pedido["total"], 2, ",", ".") ?></td>
                                 <td><?= htmlspecialchars($pedido["data_pedido"]) ?></td>
+                                <td class="acoes">
+                                    <a class="btn-link editar" href="visualizar_pedido.php?id=<?= urlencode($pedido["id"]) ?>">Ver Detalhes</a>
+                                    <a class="btn-link excluir"
+                                        href="excluir_pedido.php?id=<?= urlencode($pedido["id"]) ?>"
+                                        onclick="return confirm('Tem certeza que deseja excluir este pedido?')">
+                                        Excluir
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -161,5 +179,39 @@ if (isset($_POST["salvar"])) {
     </div>
 </div>
 
-</body>
-</html>
+<script>
+    const checkboxes = document.querySelectorAll(".produto-checkbox");
+    const totalPrevio = document.getElementById("total-previo");
+
+    function calcularTotalPrevio() {
+        let total = 0;
+
+        checkboxes.forEach((checkbox) => {
+            const produtoId = checkbox.value;
+            const preco = parseFloat(checkbox.dataset.preco);
+            const inputQuantidade = document.querySelector('[data-produto-id="' + produtoId + '"]');
+            const quantidade = parseInt(inputQuantidade.value) || 0;
+
+            if (checkbox.checked && quantidade > 0) {
+                total += preco * quantidade;
+            }
+        });
+
+        totalPrevio.textContent = total.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+    }
+
+    checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", calcularTotalPrevio);
+    });
+
+    document.querySelectorAll(".input-quantidade").forEach((input) => {
+        input.addEventListener("input", calcularTotalPrevio);
+    });
+
+    calcularTotalPrevio();
+</script>
+
+<?php require_once __DIR__ . "/partials/footer.php"; ?>

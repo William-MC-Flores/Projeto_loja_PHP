@@ -3,8 +3,13 @@
 require_once __DIR__ . "/dao/ClienteDAO.php";
 require_once __DIR__ . "/models/Cliente.php";
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$tituloPagina = "Clientes | Sistema da Loja";
+
 $clienteDAO = new ClienteDAO();
-$msg = "";
 $erro = "";
 
 if (isset($_POST["salvar"])) {
@@ -19,7 +24,9 @@ if (isset($_POST["salvar"])) {
         $cliente = new Cliente(null, $nome, $email);
 
         if ($clienteDAO->inserir($cliente)) {
-            $msg = "Cliente cadastrado com sucesso!";
+            $_SESSION["mensagem_sucesso"] = "Cliente cadastrado com sucesso!";
+            header("Location: clientes.php");
+            exit;
         } else {
             $erro = "Erro ao cadastrar cliente.";
         }
@@ -27,23 +34,16 @@ if (isset($_POST["salvar"])) {
 }
 
 $clientes = $clienteDAO->listar();
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes | Projeto Loja</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+require_once __DIR__ . "/partials/header.php";
+?>
 
 <div class="container">
     <h1>Cadastro de Clientes</h1>
 
-    <?php if ($msg != ""): ?>
-        <p class="mensagem sucesso"><?= htmlspecialchars($msg) ?></p>
+    <?php if (!empty($_SESSION["mensagem_sucesso"])): ?>
+        <p class="mensagem sucesso"><?= htmlspecialchars($_SESSION["mensagem_sucesso"]) ?></p>
+        <?php unset($_SESSION["mensagem_sucesso"]); ?>
     <?php endif; ?>
 
     <?php if ($erro != ""): ?>
@@ -105,5 +105,4 @@ $clientes = $clienteDAO->listar();
     </div>
 </div>
 
-</body>
-</html>
+<?php require_once __DIR__ . "/partials/footer.php"; ?>

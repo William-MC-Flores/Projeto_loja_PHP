@@ -3,9 +3,14 @@
 require_once __DIR__ . "/dao/ClienteDAO.php";
 require_once __DIR__ . "/models/Cliente.php";
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$tituloPagina = "Editar Cliente";
+
 $clienteDAO = new ClienteDAO();
 $erro = "";
-$msg = "";
 
 if (!isset($_GET["id"]) && !isset($_POST["id"])) {
     die("ID do cliente não informado.");
@@ -31,6 +36,7 @@ if (isset($_POST["atualizar"])) {
         $clienteAtualizado = new Cliente($id, $nome, $email);
 
         if ($clienteDAO->atualizar($clienteAtualizado)) {
+            $_SESSION["mensagem_sucesso"] = "Cliente atualizado com sucesso!";
             header("Location: clientes.php");
             exit;
         } else {
@@ -40,17 +46,9 @@ if (isset($_POST["atualizar"])) {
 
     $cliente = new Cliente($id, $nome, $email);
 }
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Cliente</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+require_once __DIR__ . "/partials/header.php";
+?>
 
 <div class="container">
     <h1>Editar Cliente</h1>
@@ -81,5 +79,4 @@ if (isset($_POST["atualizar"])) {
     </div>
 </div>
 
-</body>
-</html>
+<?php require_once __DIR__ . "/partials/footer.php"; ?>
