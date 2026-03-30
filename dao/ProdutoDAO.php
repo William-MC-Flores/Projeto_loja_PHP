@@ -3,16 +3,19 @@
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../models/Produto.php";
 
-class ProdutoDAO {
+class ProdutoDAO
+{
 
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $database = new Database();
         $this->conn = $database->getConnection();
     }
 
-    public function inserir(Produto $produto) {
+    public function inserir(Produto $produto)
+    {
         $sql = "INSERT INTO produtos (nome, preco)
                 VALUES (:nome, :preco)";
 
@@ -23,7 +26,8 @@ class ProdutoDAO {
         return $stmt->execute();
     }
 
-    public function listar() {
+    public function listar()
+    {
         $sql = "SELECT * FROM produtos ORDER BY id DESC";
 
         $stmt = $this->conn->prepare($sql);
@@ -32,7 +36,8 @@ class ProdutoDAO {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function buscarPorId($id) {
+    public function buscarPorId($id)
+    {
         $sql = "SELECT * FROM produtos WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
@@ -48,7 +53,8 @@ class ProdutoDAO {
         return null;
     }
 
-    public function atualizar(Produto $produto) {
+    public function atualizar(Produto $produto)
+    {
         $sql = "UPDATE produtos
                 SET nome = :nome, preco = :preco
                 WHERE id = :id";
@@ -61,7 +67,8 @@ class ProdutoDAO {
         return $stmt->execute();
     }
 
-    public function excluir($id) {
+    public function excluir($id)
+    {
         $sql = "DELETE FROM produtos WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);

@@ -145,7 +145,61 @@ th{
     align-items: center;
 }
 
+select{
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    font-size: 16px;
+}
+
+.lista-produtos{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.produto-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.produto-check{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.input-quantidade{
+    width: 90px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+}
+
+.btn-pedido{
+    background: #2ecc71;
+    color: white;
+}
+
 @media (max-width: 768px){
+    .produto-item{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .input-quantidade,
+    select{
+        width: 100%;
+    }
+    
     body{
         padding: 20px 10px;
     }

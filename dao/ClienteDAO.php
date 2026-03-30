@@ -3,16 +3,19 @@
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../models/Cliente.php";
 
-class ClienteDAO {
+class ClienteDAO
+{
 
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $database = new Database();
         $this->conn = $database->getConnection();
     }
 
-    public function inserir(Cliente $cliente) {
+    public function inserir(Cliente $cliente)
+    {
         $sql = "INSERT INTO clientes (nome, email)
                 VALUES (:nome, :email)";
 
@@ -23,7 +26,8 @@ class ClienteDAO {
         return $stmt->execute();
     }
 
-    public function listar() {
+    public function listar()
+    {
         $sql = "SELECT * FROM clientes ORDER BY id DESC";
 
         $stmt = $this->conn->prepare($sql);
@@ -32,7 +36,8 @@ class ClienteDAO {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function buscarPorId($id) {
+    public function buscarPorId($id)
+    {
         $sql = "SELECT * FROM clientes WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
@@ -48,7 +53,8 @@ class ClienteDAO {
         return null;
     }
 
-    public function atualizar(Cliente $cliente) {
+    public function atualizar(Cliente $cliente)
+    {
         $sql = "UPDATE clientes
                 SET nome = :nome, email = :email
                 WHERE id = :id";
@@ -61,7 +67,8 @@ class ClienteDAO {
         return $stmt->execute();
     }
 
-    public function excluir($id) {
+    public function excluir($id)
+    {
         $sql = "DELETE FROM clientes WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);

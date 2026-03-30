@@ -16,6 +16,7 @@
         <div class="linha-botoes">
             <a href="clientes.php" class="btn-link editar">Gerenciar Clientes</a>
             <a href="produtos.php" class="btn-link voltar">Gerenciar Produtos</a>
+            <a href="pedidos.php" class="btn-link btn-pedido">Gerenciar Pedidos</a>
         </div>
     </div>
 </div>
